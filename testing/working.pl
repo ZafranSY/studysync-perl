@@ -727,17 +727,14 @@ post '/getAllEmails' => sub ($c) {
 };
 
 post '/deleteLinkPermission' => sub ($c) {
-    my $payload = $c->req->json;
-
-    # Extract parameters from the request
+     my $payload = $c->req->json;
     my $session_id   = $payload->{session_id};
-    my $semester_id  = $payload->{semester_id};
-    my $category_name = $payload->{category_name};
-    my $user_role    = $payload->{selected_user_role};
-    my $user_email   = $payload->{selected_user_email};
+    my $semester_id   = $payload->{semester_id};
+    my $category_name   = $payload->{category_name};
+    my $user_role     = $payload->{selected_user_role};
+    my $user_email    = $payload->{selected_user_email};
 
-    # Authorization check
-    my $required_rolename = 'Academic Officer';
+    my $required_rolename = 'Academic Officer'; 
     my $auth_result = Authorization::check_session_role($dbh, $session_id, $required_rolename);
 
     if ($auth_result->{error}) {
