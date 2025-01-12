@@ -725,6 +725,7 @@ post '/getAllEmails' => sub ($c) {
     my $result = User::getAllEmails($dbh);
     $c->render(json => { result => $result });
 };
+
 post '/deleteLinkPermission' => sub ($c) {
     my $payload = $c->req->json;
 
