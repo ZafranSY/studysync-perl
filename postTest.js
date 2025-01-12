@@ -41,7 +41,7 @@ const PARAMTYPE = "?semester_id";
 const PARAMVALUE = "=2024/2025-1";
 
 const payload = {
-  session_id: "313",
+  session_id: "qw",
 
   semester_id: "2024/2025-2",
   category_name: "PSM 1",
