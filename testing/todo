@@ -1,0 +1,23 @@
+CategoryPermission
+-Create
+-Delete
+-Update
+-FIX get,, it should return name/role and CategoryPermission
+
+LinkPermission
+-Create
+-Delete
+-Update
+-Get
+
+Link
+-Create
+-Delete
+-Update
+-Get
+
+User
+-hardcode admin creds
+
+Category
+-create category should add default perm for academic officer ( cannot be overide),, and everyone ( cannot be deleted)
