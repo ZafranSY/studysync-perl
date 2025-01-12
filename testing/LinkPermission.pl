@@ -236,7 +236,6 @@ sub UpdateLinkPermissionUser {
 }
 
 
-
 sub DeleteLinkPermissionUser {
     my ($dbh, $session_id, $semester_id, $category_name, $user_email) = @_;
 
@@ -249,7 +248,7 @@ sub DeleteLinkPermissionUser {
         return { error => "Missing required parameters: user_email, category_name, or semester_id." };
     }
 
-    # Prepare SQL query
+    # Prepare and execute the SQL query
     my $sth = $dbh->prepare('
         DELETE FROM linkPermission 
         WHERE category = ? 
@@ -260,7 +259,6 @@ sub DeleteLinkPermissionUser {
         return { error => "Failed to prepare SQL statement." };
     };
 
-    # Execute query
     my $result = $sth->execute($category_name, $semester_id, $user_email) or do {
         $logger->error("SQL execution failed: " . $dbh->errstr);
         return { error => "Failed to execute SQL statement." };
@@ -276,25 +274,40 @@ sub DeleteLinkPermissionUser {
 }
 
 sub DeleteLinkPermissionRole {
-    my ($dbh,$session_id, $semester_id,$category_name,$user_role) = @_;
-    
-    my $sth = $dbh->prepare('
-                            DELETE from linkPermission 
-                            where category=? 
-                            AND semester_id =? 
-                            AND role_name=?;
-                            ')
-                            or die 'prepare statement failed: ' . $dbh->errstr();
-    my $result=$sth->execute($category_name,$semester_id,$user_role) 
-        or die 'execution failed: ' . $dbh->errstr();
-    
-    if ($result) {
-        return { message => "Category Permission for role $user_role  for $link$category_name ,$semester_id deleted successfully" };
-    } else {
-        return { error => "Category Permission for role $user_role for $category_name ,$semester_id failed to be deleted" };
+    my ($dbh, $session_id, $semester_id, $category_name, $user_role) = @_;
+
+    # Log the operation
+    $logger->info("Attempting to delete link permission for user_role: $user_role in category: $category_name, semester: $semester_id");
+
+    # Validate input
+    if (!$user_role || !$semester_id || !$category_name) {
+        $logger->error("Invalid parameters provided for deleting link permission");
+        return { error => "Missing required parameters: user_role, category_name, or semester_id." };
     }
-    
-    return $result;
+
+    # Prepare and execute the SQL query
+    my $sth = $dbh->prepare('
+        DELETE FROM linkPermission 
+        WHERE category = ? 
+        AND semester_id = ? 
+        AND role_name = ?;
+    ') or do {
+        $logger->error("SQL prepare failed: " . $dbh->errstr);
+        return { error => "Failed to prepare SQL statement." };
+    };
+
+    my $result = $sth->execute($category_name, $semester_id, $user_role) or do {
+        $logger->error("SQL execution failed: " . $dbh->errstr);
+        return { error => "Failed to execute SQL statement." };
+    };
+
+    if ($result) {
+        $logger->info("Link permission for user_role: $user_role successfully deleted.");
+        return { message => "Link permission for $user_role in $category_name, $semester_id deleted successfully." };
+    } else {
+        $logger->error("Failed to delete link permission for user_role: $user_role");
+        return { error => "Failed to delete link permission for $user_role in $category_name, $semester_id." };
+    }
 }
 
 
