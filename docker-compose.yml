@@ -1,0 +1,25 @@
+version: "3.9"
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080" # Maps container port 8080 to host port 8080
+    volumes:
+      - .:/app # Mounts the current directory to /app in the container
+    command: ["perl", "server.pl", "daemon", "-l", "http://*:8080"]
+
+  database:
+    image: mariadb:latest
+    ports:
+      - "3306:3306" # Maps container port 3306 to host port 3306
+    environment:
+      MYSQL_ROOT_PASSWORD: adj2425 # Set the root password for MariaDB
+      MYSQL_USER: adj2425 # Create a new user 'adj2425'
+      MYSQL_PASSWORD: adj2425 # Set the password for 'adj2425'
+      MYSQL_DATABASE: testing # Create a default database named 'studysync'
+
+volumes:
+  mariadb_data: # Create a persistent volume for MariaDB
