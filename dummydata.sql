@@ -15,15 +15,15 @@ VALUES
 -- Inserting into user
 INSERT INTO user (full_name, login_name, email, role_id, session_id, successful_logins, last_login) 
 VALUES 
-        ('John Academic', 'johnAcad', 'johnAcad@utm.com', 1, '313', 5, NOW()), 
-        ('John AcadeOwo', 'johnAcadowo', 'johnAcadowo@utm.com', 1, '314', 5, NOW()), 
-        ('John Officer', 'johnOFF', 'johnOFF@utm.com', 1, '315', 5, NOW()), 
-        ('John Pensyarah', 'johnPen', 'johnPen@utm.com', 2, 'qw', 10, NOW()),
-        ('John Lecturer', 'johnLect', 'johnLect@utm.com', 2, 'qq', 10, NOW()),
-        ('John Dr.', 'johnDr', 'johnDr@utm.com', 2, 'qo', 10, NOW()),
-        ('John Pengajar', 'johnPeng', 'johnPeng@utm.com', 2, 'qo', 10, NOW()),
-        ('John Cikgu.', 'johnCeg', 'johnCeg@utm.com', 2, 'qo', 10, NOW()),
-        ('John Student', 'johnStu', 'johnStu@utm.com', 3, 'ab', 10, NOW());
+        ('John Academic', 'johnAcad', 'johnAcad@utm.com', 2, '313', 5, NOW()), 
+        ('John AcadeOwo', 'johnAcadowo', 'johnAcadowo@utm.com', 2, '314', 5, NOW()), 
+        ('John Officer', 'johnOFF', 'johnOFF@utm.com', 2, '315', 5, NOW()), 
+        ('John Pensyarah', 'johnPen', 'johnPen@utm.com', 3, 'qw', 10, NOW()),
+        ('John Lecturer', 'johnLect', 'johnLect@utm.com', 3, 'qq', 10, NOW()),
+        ('John Dr.', 'johnDr', 'johnDr@utm.com', 3, 'qo', 10, NOW()),
+        ('John Pengajar', 'johnPeng', 'johnPeng@utm.com', 3, 'qo', 10, NOW()),
+        ('John Cikgu.', 'johnCeg', 'johnCeg@utm.com', 3, 'qo', 10, NOW()),
+        ('John Student', 'johnStu', 'johnStu@utm.com', 4, 'ab', 10, NOW());
 
 -- Inserting into Categories
 INSERT INTO Categories (category, semester_id) 

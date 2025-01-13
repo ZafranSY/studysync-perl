@@ -1,17 +1,12 @@
+-- Drop triggers
+DROP TRIGGER IF EXISTS trg_after_category_insert;
+DROP TRIGGER IF EXISTS trg_after_link_insert;
+DROP TRIGGER IF EXISTS trg_prevent_insert_category_permission;
+DROP TRIGGER IF EXISTS trg_prevent_insert_link_permission;
+DROP TRIGGER IF EXISTS trg_prevent_delete_category_permission;
+DROP TRIGGER IF EXISTS trg_prevent_delete_link_permission;
 
--- Drop all the triggers first
-DROP TRIGGER IF EXISTS before_insert_link_permission_AcademicOfficerNoOverride;
-DROP TRIGGER IF EXISTS before_update_link_permission_AcademicOfficerNoOverride;
-DROP TRIGGER IF EXISTS before_insert_category_permission_ReadFalseAllFalse;
-DROP TRIGGER IF EXISTS before_update_category_permission_ReadFalseAllFalse;
-DROP TRIGGER IF EXISTS before_insert_link_permission_NoOverrideOwner;
-DROP TRIGGER IF EXISTS before_delete_link_permission_NoDeleteEveryone;
-DROP TRIGGER IF EXISTS before_delete_category_permission_NoDeleteEveryone;
-DROP TRIGGER IF EXISTS after_insert_categories_grant_academic_officer_permissions;
-DROP TRIGGER IF EXISTS after_insert_gdlinks_grant_owner_permissions;
-
-
-
+-- Drop tables in reverse dependency order
 DROP TABLE IF EXISTS linkPermission;
 DROP TABLE IF EXISTS categoryPermission;
 DROP TABLE IF EXISTS gdlinks;

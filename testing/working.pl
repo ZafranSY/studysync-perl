@@ -659,9 +659,7 @@ post '/createLinkPermission' => sub ($c) {
 
 # http://localhost/updateLinkPermission
 # request body =>
-#       session_id : ??     ======= get from localStorage/sessionStorage
-#       semester_id : ??    ======= get from localStorage/sessionStorage       
-#       category_name : ??    ======= get from localStorage/sessionStorage     
+#       session_id : ??     ======= get from localStorage/sessionStorage    
 #       gdlink_id : ??    ======= get from click     
 #       selected_user_role : ????    ======= get from fill form     
 #       selected_user_email : ????   ======= get from fill form     
@@ -726,17 +724,28 @@ post '/getAllEmails' => sub ($c) {
     $c->render(json => { result => $result });
 };
 
+#http://localhost/deleteLinkPermission
+# request body =>
+#           session_id :?
+#           semester_id :?
+#           category_name :?
+
 post '/deleteLinkPermission' => sub ($c) {
-     my $payload = $c->req->json;
+    my $payload = $c->req->json;
+
+    # Validate and handle the payload
     my $session_id   = $payload->{session_id};
-    my $semester_id   = $payload->{semester_id};
-    my $category_name   = $payload->{category_name};
-    my $user_role     = $payload->{selected_user_role};
-    my $user_email    = $payload->{selected_user_email};
+    my $semester_id  = $payload->{semester_id};
+    my $category_name = $payload->{category_name};
+    my $user_role    = $payload->{selected_user_role};
+    my $user_email   = $payload->{selected_user_email};
+if (!$user_email && !$user_role) {
+    $c->render(json => { error => "Either user_email or user_role must be provided." });
+    return;
+}
 
-    my $required_rolename = 'Academic Officer'; 
-    my $auth_result = Authorization::check_session_role($dbh, $session_id, $required_rolename);
-
+    # Authorization check
+    my $auth_result = Authorization::check_session_role($dbh, $session_id, 'Admin');
     if ($auth_result->{error}) {
         $c->render(json => { result => $auth_result });
         return;
@@ -744,11 +753,11 @@ post '/deleteLinkPermission' => sub ($c) {
 
     # Ensure only one of user_email or user_role is provided
     if ($user_email && $user_role) {
-        $c->render(json => { result => "Only one of user_email or user_role can be updated at a time" });
+        $c->render(json => { result => "Only one of user_email or user_role can be provided." });
         return;
     }
 
-    # Perform deletion based on user_role or user_email
+    # Perform deletion
     my $result;
     if ($user_role) {
         $result = LinkPermission::DeleteLinkPermissionRole($dbh, $session_id, $semester_id, $category_name, $user_role);
@@ -757,10 +766,8 @@ post '/deleteLinkPermission' => sub ($c) {
         $result = LinkPermission::DeleteLinkPermissionUser($dbh, $session_id, $semester_id, $category_name, $user_email);
     }
 
-    # Render the result
+    # Render result
     $c->render(json => { result => $result });
 };
-
-
 
 app->start;

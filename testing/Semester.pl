@@ -81,6 +81,11 @@ sub DeleteSemester {
 sub UpdateSemester {
     my ($dbh, $semester_id,$new_semester_id) = @_;
     
+    if (!$new_semester_id || length($new_semester_id) != 11) {
+        $len=length($new_semester_id);
+        return { error => "Invalid semester_id. It must be 11 characters. $semester_id , $len" };
+    }
+
     my $sth_check = $dbh->prepare('SELECT 1 FROM sessionSemester WHERE semester_id = ?') or die 'prepare statement failed: ' . $dbh->errstr();
     $sth_check->execute($semester_id) 
                 or die 'prepare statement failed: ' . $dbh->errstr();

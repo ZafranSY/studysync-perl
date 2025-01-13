@@ -82,6 +82,10 @@ OUTPUT
 OUTPUT
 {"error":"Insufficient role privileges"}
 
+OUTPUT
+{"error":"Invalid semester_id. It must be 11 characters. 2099/2012 , 9"} 
+
+
 =================================================================================================================
 
 http://localhost/updateSemester              ACADEMIC OFFICER ONLY
@@ -100,6 +104,8 @@ OUTPUT
 OUTPUT
 {"error":"Insufficient role privileges"}
 
+OUTPUT
+{"error":"Invalid semester_id. It must be 11 characters. 2099/2012 , 9"} 
 
 =================================================================================================================
 =================================================================================================================
@@ -521,8 +527,15 @@ OUTPUT
 
 =================================================================================================================
 
-
 http://localhost/updateLinkPermission
+request body =>
+    session_id : ??     ======= get from localStorage/sessionStorage    
+    gdlink_id : ??    ======= get from click     
+    selected_user_role : ????    ======= get from fill form     
+    selected_user_email : ????   ======= get from fill form     
+    can_read : ????   ======= get from fill form,,, boolean (0/1 true/false)
+    can_update : ????   ======= get from fill form,,, boolean (0/1 true/false)
+    can_delete : ????   ======= get from fill form,,, boolean (0/1 true/false)
 
 OUTPUT
 {"error":"No permission ."}
@@ -542,6 +555,8 @@ OUTPUT
 OUTPUT
 {"result":{"error":"Cannot add permission johnStu@utm.cm for email that doesnt exist. "}}
 
+=================================================================================================================
+
 http://localhost/deleteLinkPermission
 
 
@@ -560,7 +575,7 @@ OUTPUT
 =================================================================================================================
 
 
-http://localhost/getAvailableUserEmail      FOR EVERYONE
+http://localhost/getAllEmails      FOR EVERYONE
 
 OUTPUT
 {"result":["johnAcad@utm.com","johnAcadowo@utm.com","johnOFF@utm.com","johnPen@utm.com","johnLect@utm.com","johnDr@utm.com","johnPeng@utm.com","johnCeg@utm.com","johnStu@utm.com","msmd2@live.utm.my","tonianwar@utm.my"]}

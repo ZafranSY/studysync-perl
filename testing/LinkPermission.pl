@@ -235,8 +235,6 @@ sub UpdateLinkPermissionUser {
     return $result;
 }
 
-
-
 sub DeleteLinkPermissionUser {
     my ($dbh,$session_id, $semester_id,$category_name,$user_email) = @_;
     
@@ -258,11 +256,12 @@ sub DeleteLinkPermissionUser {
     
     return $result;
 }
-sub DeleteLinkPermissionRole {
+
+sub DeleteCategoryPermissionRole {
     my ($dbh,$session_id, $semester_id,$category_name,$user_role) = @_;
     
     my $sth = $dbh->prepare('
-                            DELETE from linkPermission 
+                            DELETE from categoryPermission 
                             where category=? 
                             AND semester_id =? 
                             AND role_name=?;
@@ -272,7 +271,7 @@ sub DeleteLinkPermissionRole {
         or die 'execution failed: ' . $dbh->errstr();
     
     if ($result) {
-        return { message => "Category Permission for role $user_role  for $link$category_name ,$semester_id deleted successfully" };
+        return { message => "Category Permission for role $user_role  for $category_name ,$semester_id deleted successfully" };
     } else {
         return { error => "Category Permission for role $user_role for $category_name ,$semester_id failed to be deleted" };
     }
