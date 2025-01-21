@@ -1,8 +1,57 @@
-# StudySync Perl Backend - File and Folder Structure
+StudySync Perl Backend
+Overview
+The StudySync Perl Backend provides the server-side logic and database integration for the StudySync platform. Built using Mojolicious, this backend ensures efficient handling of academic data and seamless communication between students and lecturers.
 
-This README provides details about the file and folder structure of the **StudySync Perl Backend** project and their respective purposes.
+Goals
+Reliability: Provides a robust backend to handle API requests and ensure seamless data transfer.
+Integration: Manages interactions with the MariaDB database for efficient storage and retrieval of data.
+Scalability: Designed to support a growing number of users and interactions.
+Features
+RESTful APIs: Endpoints for managing user authentication, notifications, and updates.
+Database Integration: Efficient CRUD operations with MariaDB.
+Real-time Communication: Supports instant updates through WebSocket integration.
+Secure Data Handling: Implements secure practices for data access and user management.
+Prerequisites
+WSL or Docker with mariadb:latest.
+Perl (5.10 or later).
+Mojolicious framework.
+Installation
+Clone the repository:
 
----
+bash
+Copy
+Edit
+git clone https://github.com/yourusername/studysync-perl.git
+Navigate to the backend directory:
+
+bash
+Copy
+Edit
+cd studysync-perl
+Set up MariaDB using Docker:
+
+bash
+Copy
+Edit
+docker run --name studysync-mariadb -e MYSQL_ROOT_PASSWORD=yourpassword -e MYSQL_DATABASE=studysync -p 3306:3306 -d mariadb:latest
+Install Perl dependencies:
+
+bash
+Copy
+Edit
+cpan Mojolicious DBI DBD::mysql
+Configure the database connection in config/database.conf:
+
+ini
+Copy
+Edit
+[database]
+host = 127.0.0.1
+port = 3306
+user = root
+password = yourpassword
+database = studysync
+
 
 ## Folder Structure
 ### **Root Directory**
