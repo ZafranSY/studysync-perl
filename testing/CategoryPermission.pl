@@ -68,12 +68,18 @@ sub CheckInsertPermission {
         LIMIT 1
     ') or die 'Prepare failed: ' . $dbh->errstr();
 
-    # Execute the query for category permission
-    $sth->execute($category_name, $semester_id, $email,$role_name)
+    $sth->execute($category_name, $semester_id,$role_name,$email)
         or die 'Execution failed: ' . $dbh->errstr();
 
+    my $row = $sth->fetchrow_hashref();
+    if ($row) {
+        $logger->info('Permission granted: ' . join(', ', map { "$_ => $row->{$_}" } keys %$row));
+    } else {
+        $logger->info('Permission denied.'." \nCat : ".$category_name." \nSEm: ".$semester_id." \nEmail: ".$email." \nRole:".$role_name);
+    }
+
     # Check if permission was granted
-    if (my $row = $sth->fetchrow_arrayref) {
+    if ($row) {
         return 1;  # Permission granted
     } else {
         return 0;  # Permission denied

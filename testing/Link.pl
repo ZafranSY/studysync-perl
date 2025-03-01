@@ -328,58 +328,65 @@ sub getALLlinkCreateWhere {
 
 
 sub CreateLink {
-my ($dbh, $session_id, $semester_id, $category_name, $ref_name, $desc, $link) = @_;
+    my ($dbh,$session_id, $semester_id,$category_name,$ref_name,$desc,$link) = @_;
+    $role_name=Authorization::getRoleName($dbh, $session_id);
+    $email=Authorization::getEmail($dbh, $session_id);
+    $categoryPerm=CategoryPermission::getCategoryPermissionRead($dbh,$session_id, $semester_id);
+    $a=(json => { categoriesPermission => $categoryPerm });
 
-    # Log session_id for debugging
-    $logger->info("Received session_id: $session_id for CreateLink");
-
-    # Fetch the role name
-    my $role_name = Authorization::getRoleName($dbh, $session_id);
-    unless ($role_name) {
-        $logger->error("Failed to fetch role name for session_id: $session_id");
-        return { error => "Failed to fetch role name for session_id: $session_id" };
-    }
-    $logger->info("Role name for session_id $session_id: $role_name");
-
-    # Fetch the email
-    my $email = Authorization::getEmail($dbh, $session_id);
-    unless ($email) {
-        $logger->error("Failed to fetch email for session_id: $session_id");
-        return { error => "Failed to fetch email for session_id: $session_id" };
-    }
-    # Permission checks...
-    my $categoryPerm = CategoryPermission::getCategoryPermissionRead($dbh, $session_id, $semester_id);
     my $found = 0;
-    foreach my $perm (@{$categoryPerm}) {
-        if ($perm eq $category_name) {
-            $found = 1;
-            last;
+    foreach my $perm (@{$a->{categoriesPermission}}) {
+        if($perm eq $category_name){
+            $found=1;
+
         }
     }
-    unless ($found) {
-        return { error => "Category $category_name does not exist or you lack permission" };
+    if ($found!=1) {
+        return { error => "Category $category_name doesnt exists or you lack permission" };
+    } 
+
+    # GET INSERT PERM
+    my $insPerm=CategoryPermission::CheckInsertPermission ($dbh, $semester_id, $category_name, $email,$role_name);
+    if($insPerm==0){
+        return { error => "Link $ref_name, $link failed to be inserted, NOT ENOUGH PERM" };
     }
 
-    # Check Insert Permission
-    my $insPerm = CategoryPermission::CheckInsertPermission($dbh, $semester_id, $category_name, $email, $role_name);
-    unless ($insPerm) {
-        return { error => "Link $ref_name, $link failed to be inserted, insufficient permissions" };
-    }
-
-    # Insert Link
     my $sth = $dbh->prepare('
-        INSERT INTO gdlinks (category, sessem, ref_name, description, owner, link)
-        VALUES (?, ?, ?, ?, ?, ?)
-    ') or die "Failed to prepare statement: " . $dbh->errstr;
-
-    my $result = $sth->execute($category_name, $semester_id, $ref_name, $desc, $email, $link)
-        or die "Execution failed: " . $dbh->errstr;
+                        INSERT INTO gdlinks (category, sessem, ref_name, description, owner, link)
+                        SELECT ?, ?, ?, ?, ?, ?
+                        FROM DUAL
+                        WHERE EXISTS (
+                            SELECT 1
+                            FROM categoryPermission
+                            WHERE category = ?
+                            AND semester_id = ?
+                            AND 
+                            (
+                            user_email = ?
+                            OR role_name = \'Everyone\'
+                            OR role_name = ?
+                            )
+                            AND can_create_links = 1
+                            LIMIT 1
+                        )
+                        OR EXISTS (
+                            SELECT 1
+                            FROM user
+                            WHERE email = ?
+                            AND role_id = (SELECT role_id FROM roles WHERE role_name = "Academic Officer")
+                            LIMIT 1);
+    ')
+        or die 'prepare statement failed: ' . $dbh->errstr();
+    my $result=$sth->execute($category_name, $semester_id,$ref_name,$desc,$email,$link,$category_name,$semester_id,$email,$role_name,$email)
+        or die 'execution failed: ' . $dbh->errstr();
 
     if ($result) {
         return { message => "Link $ref_name, $link inserted successfully" };
     } else {
-        return { error => "Failed to insert link $ref_name, $link" };
+        return { error => "Link $ref_name, $link failed to be inserted" };
     }
+    
+    return $result;
 }
 
 sub DeleteLink{
