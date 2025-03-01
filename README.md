@@ -67,7 +67,8 @@ The **StudySync Perl Backend** provides the server-side logic and database integ
 
 1. Start the backend server:
    ```bash
-   perl daemon working.pl http://*:80
+   perl working.pl daemon -l http://*:80
+
    ```
 
 2. The server will be accessible at:
