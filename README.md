@@ -77,7 +77,7 @@ The **StudySync Perl Backend** is built using the Mojolicious framework. It mana
 Clone the repo to your local machine:
 
 ```bash
-git clone https://github.com/yourusername/studysync-perl.git
+git clone https://github.com/ZafranSY/studysync-perl
 cd studysync-perl
 ```
 
